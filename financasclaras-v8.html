@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinançasClaras — Controle Financeiro Pessoal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Inter:wght@400;500&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --verde:    #1A7A4A;
+    --verde-lt: #E6F4ED;
+    --verde-md: #2DA05F;
+    --creme:    #F7F5F0;
+    --cinza:    #6B7280;
+    --texto:    #1C1C1E;
+    --branco:   #FFFFFF;
+    --alerta:   #D94F3A;
+    --amarelo:  #F5A623;
+    --borda:    #E5E2DA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--branco);
+    border-bottom: 1px solid var(--borda);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--verde);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--texto); }
+  nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  nav a {
+    text-decoration: none;
+    color: var(--cinza);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--verde); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--verde);
+    color: var(--branco);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 100px;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    max-width: 520px;
+    margin: 0 auto 2rem;
+  }
+  .btn-hero {
+    display: inline-block;
+    background: var(--branco);
+    color: var(--verde);
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  /* ── SEÇÕES ── */
+  section { padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.5px;
+  }
+  .section-sub {
+    color: var(--cinza);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── CARD BASE ── */
+  .card {
+    background: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  /* ── FORMULÁRIO DE GASTOS ── */
+  #lancamento { background: var(--branco); border-radius: 16px; border: 1px solid var(--borda); padding: 2rem; }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media(max-width:600px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cinza);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  input, select {
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--verde-md);
+    box-shadow: 0 0 0 3px rgba(45,160,95,0.15);
+  }
+  .btn-add {
+    width: 100%;
+    background: var(--verde);
+    color: var(--branco);
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-add:hover { background: var(--verde-md); transform: translateY(-1px); }
+
+  /* ── RESUMO ── */
+  .resumo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  @media(max-width:600px) { .resumo-grid { grid-template-columns: 1fr; } }
+
+  .resumo-card {
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--borda);
+  }
+  .resumo-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.4rem;
+  }
+  .resumo-valor {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+  .card-renda   { background: var(--verde-lt); }
+  .card-renda .resumo-label   { color: var(--verde); }
+  .card-renda .resumo-valor   { color: var(--verde); }
+  .card-gastos  { background: #FEF2F0; }
+  .card-gastos .resumo-label  { color: var(--alerta); }
+  .card-gastos .resumo-valor  { color: var(--alerta); }
+  .card-saldo   { background: var(--branco); }
+  .card-saldo .resumo-label   { color: var(--cinza); }
+
+  /* ── GRÁFICO DE BARRAS ── */
+  .chart-wrap { margin-top: 1.5rem; }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .bar-label {
+    font-size: 0.8rem;
+    width: 110px;
+    flex-shrink: 0;
+    color: var(--cinza);
+    font-weight: 500;
+  }
+  .bar-track {
+    flex: 1;
+    height: 10px;
+    background: var(--creme);
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid var(--borda);
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .bar-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    width: 70px;
+    text-align: right;
+    color: var(--texto);
+  }
+
+  /* Cores por categoria */
+  .cat-salario  { background: #1A7A4A; }
+  .cat-moradia  { background: #4A90D9; }
+  .cat-alimentacao { background: #E8A838; }
+  .cat-transporte  { background: #7B61FF; }
+  .cat-saude       { background: #2DA05F; }
+  .cat-lazer       { background: #E85C5C; }
+  .cat-educacao    { background: #00B4D8; }
+  .cat-outros      { background: #9CA3AF; }
+
+  /* ── LISTA DE LANÇAMENTOS ── */
+  .lista-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .btn-limpar {
+    background: none;
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--cinza);
+    transition: all 0.2s;
+  }
+  .btn-limpar:hover { border-color: var(--alerta); color: var(--alerta); }
+
+  .item-lista {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--borda);
+    gap: 0.75rem;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; } }
+  .item-lista:last-child { border-bottom: none; }
+  .item-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .item-desc { flex: 1; font-size: 0.9rem; }
+  .item-cat  { font-size: 0.75rem; color: var(--cinza); }
+  .item-valor {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .item-valor.renda { color: var(--verde); }
+  .item-valor.gasto { color: var(--alerta); }
+  .btn-del {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 1rem;
+    transition: color 0.2s;
+    padding: 0 0.3rem;
+  }
+  .btn-del:hover { color: var(--alerta); }
+
+  /* ── GRUPOS POR DATA ── */
+  .grupo-data {
+    margin-bottom: 1.25rem;
+  }
+  .grupo-data:last-child { margin-bottom: 0; }
+  .grupo-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.4rem 0.1rem;
+    margin-bottom: 0.3rem;
+    border-bottom: 2px solid var(--verde-lt);
+  }
+  .grupo-data-label {
+    display: flex;
+    align-items: baseline;
+  }
+  .grupo-data-label span.nome {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--verde);
+    text-transform: capitalize;
+  }
+  .grupo-data-hoje {
+    background: var(--verde);
+    color: var(--branco);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.45rem;
+    border-radius: 100px;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .grupo-data-saldo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--cinza);
+  }
+  .grupo-data-saldo.positivo { color: var(--verde); }
+  .grupo-data-saldo.negativo { color: var(--alerta); }
+
+  /* ── DICAS ── */
+  .dicas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  .dica-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 1px solid var(--borda);
+    background: var(--branco);
+  }
+  .dica-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.6rem;
+  }
+  .dica-titulo {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .dica-texto { font-size: 0.85rem; color: var(--cinza); line-height: 1.5; }
+
+  /* ── REGRA 50/30/20 ── */
+  .regra-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media(max-width:600px) { .regra-wrap { grid-template-columns: 1fr; } }
+  .regra-bloco { padding: 1.25rem; border-radius: 12px; border: 1px solid var(--borda); }
+  .regra-pct {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+  }
+  .regra-nome { font-weight: 600; margin-bottom: 0.3rem; }
+  .regra-desc { font-size: 0.85rem; color: var(--cinza); }
+  .regra-barra-wrap {
+    height: 8px;
+    background: var(--borda);
+    border-radius: 100px;
+    overflow: hidden;
+    margin: 0.6rem 0;
+  }
+  .regra-barra-fill { height: 100%; border-radius: 100px; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--cinza);
+    font-size: 0.82rem;
+    border-top: 1px solid var(--borda);
+    margin-top: 2rem;
+  }
+  footer strong { color: var(--verde); }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--cinza);
+    font-size: 0.9rem;
+  }
+  .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+  /* ── INDICADOR DE MÊS ATUAL ── */
+  .mes-atual-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--verde-lt);
+    border: 1px solid var(--verde-md);
+    border-radius: 100px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--verde);
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+  }
+
+  /* ── HISTÓRICO MENSAL ── */
+  .historico-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .historico-card {
+    background: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+  }
+  .historico-mes {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    text-transform: capitalize;
+  }
+  .historico-linha {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    margin-bottom: 0.3rem;
+    color: var(--cinza);
+  }
+  .historico-linha span:last-child {
+    font-family: 'DM Mono', monospace;
+    color: var(--texto);
+    font-weight: 500;
+  }
+  .historico-saldo-linha {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--borda);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .historico-saldo-linha span:last-child {
+    font-family: 'DM Mono', monospace;
+  }
+  .historico-saldo-linha.positivo span:last-child { color: var(--verde); }
+  .historico-saldo-linha.negativo span:last-child { color: var(--alerta); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--texto);
+    color: var(--branco);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── ALERTA ORÇAMENTO ── */
+  .alerta-box {
+    background: #FEF2F0;
+    border: 1px solid #FBCBBD;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 0.88rem;
+    color: #9B2D1F;
+    display: none;
+  }
+  .alerta-box.show { display: block; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Finanças<span>Claras</span></div>
+  <ul>
+    <li><a href="#lancamento">Lançar</a></li>
+    <li><a href="#resumo">Resumo</a></li>
+    <li><a href="#historico">Histórico</a></li>
+    <li><a href="#dicas">Dicas</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">💡 Educação Financeira Pessoal · v8</div>
+  <h1>Seu dinheiro,<br>sob controle.</h1>
+  <p>Registre seus gastos, visualize para onde seu dinheiro vai e aprenda a construir uma vida financeira mais saudável.</p>
+  <a href="#lancamento" class="btn-hero">Começar agora →</a>
+</div>
+
+<!-- LANÇAMENTO -->
+<section id="lancamento">
+  <p class="section-title">Registrar lançamento</p>
+  <p class="section-sub">Adicione suas receitas e despesas do mês.</p>
+
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="tipo">
+          <option value="gasto">💸 Despesa</option>
+          <option value="renda">💰 Receita</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="categoria">
+          <option value="salario">💼 Salário</option>
+          <option value="moradia">🏠 Moradia</option>
+          <option value="alimentacao">🍽️ Alimentação</option>
+          <option value="transporte">🚗 Transporte</option>
+          <option value="saude">🏥 Saúde</option>
+          <option value="lazer">🎭 Lazer</option>
+          <option value="educacao">📚 Educação</option>
+          <option value="outros">📦 Outros</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Descrição <span style="text-transform:none;font-weight:400;color:#9CA3AF;">(opcional)</span></label>
+        <input type="text" id="descricao" placeholder="Ex: Aluguel, Supermercado... (pode deixar em branco)">
+      </div>
+      <div class="form-group">
+        <label>Valor (R$)</label>
+        <input type="number" id="valor" placeholder="0,00" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Data</label>
+        <input type="date" id="data">
+      </div>
+    </div>
+    <button class="btn-add" onclick="adicionarLancamento()">+ Adicionar lançamento</button>
+  </div>
+</section>
+
+<!-- RESUMO -->
+<section id="resumo">
+  <p class="section-title">Resumo do mês</p>
+  <p class="section-sub">Visão geral de receitas, despesas e saldo do mês atual.</p>
+  <div class="mes-atual-pill">📅 <span id="mes-atual-nome">—</span></div>
+
+  <div class="resumo-grid">
+    <div class="resumo-card card-renda">
+      <div class="resumo-label">Receitas</div>
+      <div class="resumo-valor" id="total-renda">R$ 0,00</div>
+    </div>
+    <div class="resumo-card card-gastos">
+      <div class="resumo-label">Despesas</div>
+      <div class="resumo-valor" id="total-gastos">R$ 0,00</div>
+    </div>
+    <div class="resumo-card card-saldo">
+      <div class="resumo-label">Saldo</div>
+      <div class="resumo-valor" id="total-saldo">R$ 0,00</div>
+    </div>
+  </div>
+
+  <div class="alerta-box" id="alerta-orcamento">
+    ⚠️ <strong>Atenção:</strong> suas despesas superaram suas receitas. Revise seus gastos para equilibrar o orçamento.
+  </div>
+
+  <!-- Gráfico por categoria -->
+  <div class="card" style="margin-top:1.5rem;">
+    <p style="font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:1rem;">Despesas por categoria</p>
+    <div class="chart-wrap" id="chart-categorias">
+      <div class="empty"><div class="empty-icon">📊</div>Nenhuma despesa registrada ainda.</div>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div class="card" style="margin-top:1.5rem;">
+    <div class="lista-header">
+      <p style="font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;">Lançamentos</p>
+      <button class="btn-limpar" onclick="limparTudo()">Limpar tudo</button>
+    </div>
+    <div id="lista-lancamentos">
+      <div class="empty"><div class="empty-icon">📋</div>Nenhum lançamento ainda. Adicione acima!</div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTÓRICO MENSAL -->
+<section id="historico">
+  <p class="section-title">Histórico mensal</p>
+  <p class="section-sub">Seus meses anteriores ficam guardados aqui — nada é apagado quando o mês vira.</p>
+  <div class="historico-grid" id="historico-meses">
+    <div class="empty"><div class="empty-icon">🗂️</div>Ainda não há meses anteriores fechados.</div>
+  </div>
+</section>
+
+<!-- REGRA 50/30/20 -->
+<section>
+  <p class="section-title">Regra 50/30/20</p>
+  <p class="section-sub">Um guia simples para distribuir sua renda de forma equilibrada.</p>
+  <div class="regra-wrap">
+    <div class="regra-bloco">
+      <div class="regra-pct" style="color:#4A90D9">50%</div>
+      <div class="regra-nome">Necessidades</div>
+      <div class="regra-barra-wrap"><div class="regra-barra-fill" style="width:50%;background:#4A90D9"></div></div>
+      <div class="regra-desc">Moradia, alimentação, transporte e saúde — gastos essenciais para viver.</div>
+    </div>
+    <div class="regra-bloco">
+      <div class="regra-pct" style="color:#E8A838">30%</div>
+      <div class="regra-nome">Desejos</div>
+      <div class="regra-barra-wrap"><div class="regra-barra-fill" style="width:30%;background:#E8A838"></div></div>
+      <div class="regra-desc">Lazer, restaurantes, assinaturas e tudo que você quer mas não precisa.</div>
+    </div>
+    <div class="regra-bloco">
+      <div class="regra-pct" style="color:#2DA05F">20%</div>
+      <div class="regra-nome">Investimentos e reserva</div>
+      <div class="regra-barra-wrap"><div class="regra-barra-fill" style="width:20%;background:#2DA05F"></div></div>
+      <div class="regra-desc">Poupança, fundo de emergência e investimentos para o futuro.</div>
+    </div>
+    <div class="regra-bloco" style="background:var(--verde-lt);border-color:#A8D8BC;">
+      <div class="regra-pct" style="color:var(--verde)">Meta</div>
+      <div class="regra-nome">Com base na sua renda</div>
+      <div class="regra-desc" id="meta-regra">Adicione uma receita para ver sua meta personalizada.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DICAS -->
+<section id="dicas">
+  <p class="section-title">Dicas de educação financeira</p>
+  <p class="section-sub">Pequenos hábitos que fazem grande diferença ao longo do tempo.</p>
+  <div class="dicas-grid">
+    <div class="dica-card">
+      <div class="dica-icon">🏦</div>
+      <div class="dica-titulo">Fundo de emergência</div>
+      <div class="dica-texto">Guarde de 3 a 6 meses de despesas fixas em uma conta de fácil resgate. É seu colchão de segurança para imprevistos.</div>
+    </div>
+    <div class="dica-card">
+      <div class="dica-icon">📆</div>
+      <div class="dica-titulo">Pague-se primeiro</div>
+      <div class="dica-texto">Ao receber o salário, transfira imediatamente o valor que quer poupar. Não espere sobrar — não vai sobrar.</div>
+    </div>
+    <div class="dica-card">
+      <div class="dica-icon">🔄</div>
+      <div class="dica-titulo">Revise assinaturas</div>
+      <div class="dica-texto">Streaming, apps e mensalidades esquecidas consomem centenas por mês sem que você perceba. Revise a cada 3 meses.</div>
+    </div>
+    <div class="dica-card">
+      <div class="dica-icon">🎯</div>
+      <div class="dica-titulo">Metas concretas</div>
+      <div class="dica-texto">Poupar "para o futuro" é abstrato demais. Defina: "quero R$ 5.000 em 10 meses". Isso cria foco e motivação real.</div>
+    </div>
+    <div class="dica-card">
+      <div class="dica-icon">💳</div>
+      <div class="dica-titulo">Cartão de crédito</div>
+      <div class="dica-texto">Use apenas o que já tem disponível. Nunca pague o mínimo — os juros do rotativo são os mais altos do mercado.</div>
+    </div>
+    <div class="dica-card">
+      <div class="dica-icon">📈</div>
+      <div class="dica-titulo">Investimento simples</div>
+      <div class="dica-texto">Para começar, o Tesouro Direto e os CDBs são seguros e rendem mais que a poupança. O tempo é seu maior aliado.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>FinançasClaras</strong> · Projeto de TCC — Administração · Educação Financeira Pessoal<br>
+  <span style="opacity:0.6;">Os dados são salvos localmente e não são compartilhados.</span>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+  // Captura qualquer erro JS e mostra na tela (útil para debug no celular, sem precisar de DevTools)
+  window.addEventListener('error', function(e) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#D94F3A;color:#fff;padding:10px 14px;font-family:monospace;font-size:12px;z-index:9999;white-space:pre-wrap;';
+    banner.textContent = '⚠️ Erro JS: ' + e.message + ' (linha ' + e.lineno + ')';
+    document.body.prepend(banner);
+  });
+</script>
+<script>
+  // Estado
+  let lancamentos = JSON.parse(localStorage.getItem('fc_lancamentos') || '[]');
+
+  const cores = {
+    salario:     '#1A7A4A',
+    moradia:     '#4A90D9',
+    alimentacao: '#E8A838',
+    transporte:  '#7B61FF',
+    saude:       '#2DA05F',
+    lazer:       '#E85C5C',
+    educacao:    '#00B4D8',
+    outros:      '#9CA3AF',
+  };
+
+  const emojis = {
+    salario:'💼', moradia:'🏠', alimentacao:'🍽️', transporte:'🚗',
+    saude:'🏥', lazer:'🎭', educacao:'📚', outros:'📦'
+  };
+
+  // Data padrão = hoje (protegido: nunca deixa travar o resto do script)
+  try {
+    const campoData = document.getElementById('data');
+    if (campoData) {
+      const hoje = new Date();
+      const offset = hoje.getTimezoneOffset();
+      const local = new Date(hoje.getTime() - offset * 60000);
+      campoData.value = local.toISOString().split('T')[0];
+    }
+  } catch (e) {
+    console.error('Erro ao definir data padrão:', e);
+  }
+
+  function fmt(v) {
+    return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  const nomesCategorias = {
+    salario: 'Salário', moradia: 'Moradia', alimentacao: 'Alimentação',
+    transporte: 'Transporte', saude: 'Saúde', lazer: 'Lazer',
+    educacao: 'Educação', outros: 'Outros'
+  };
+
+  function adicionarLancamento() {
+   try {
+    const tipo      = document.getElementById('tipo').value;
+    const categoria = document.getElementById('categoria').value;
+    const descricaoEl = document.getElementById('descricao');
+    const valorEl     = document.getElementById('valor');
+    const dataEl      = document.getElementById('data');
+
+    // Descrição é opcional: se vazia, usa o nome da categoria
+    let descricao = descricaoEl.value.trim();
+    if (!descricao) {
+      descricao = nomesCategorias[categoria] || 'Lançamento';
+    }
+    const valor     = parseFloat(valorEl.value);
+    let   data       = dataEl.value;
+
+    // Se por algum motivo o campo de data estiver vazio, usa a data de hoje automaticamente
+    if (!data) {
+      const hoje = new Date();
+      const offset = hoje.getTimezoneOffset();
+      const local = new Date(hoje.getTime() - offset * 60000);
+      data = local.toISOString().split('T')[0];
+    }
+
+    if (!valorEl.value || isNaN(valor) || valor <= 0) {
+      toast('⚠️ Falta preencher um Valor válido.');
+      valorEl.focus();
+      return;
+    }
+
+    lancamentos.unshift({ id: Date.now(), tipo, categoria, descricao, valor, data });
+    localStorage.setItem('fc_lancamentos', JSON.stringify(lancamentos));
+
+    descricaoEl.value = '';
+    valorEl.value = '';
+
+    renderizar();
+    toast('✅ Lançamento adicionado!');
+   } catch (e) {
+    console.error('Erro em adicionarLancamento:', e);
+    alert('Erro ao adicionar: ' + e.message);
+   }
+  }
+
+  function remover(id) {
+    lancamentos = lancamentos.filter(l => l.id !== id);
+    localStorage.setItem('fc_lancamentos', JSON.stringify(lancamentos));
+    renderizar();
+    toast('🗑️ Removido.');
+  }
+
+  function limparTudo() {
+    if (!confirm('Apagar todos os lançamentos?')) return;
+    lancamentos = [];
+    localStorage.removeItem('fc_lancamentos');
+    renderizar();
+    toast('🧹 Dados limpos.');
+  }
+
+  function chaveDoMes(dataStr) {
+    // Retorna 'YYYY-MM' a partir de uma data 'YYYY-MM-DD'
+    return dataStr ? dataStr.slice(0, 7) : null;
+  }
+
+  const NOMES_MESES = [
+    'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+    'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+  ];
+
+  function nomeDoMes(chaveAnoMes) {
+    try {
+      const partes = chaveAnoMes.split('-');
+      const ano = partes[0];
+      const mesIndex = parseInt(partes[1], 10) - 1;
+      const nomeMes = NOMES_MESES[mesIndex] || '';
+      return nomeMes + ' de ' + ano;
+    } catch (e) {
+      console.error('Erro em nomeDoMes:', e);
+      return chaveAnoMes;
+    }
+  }
+
+  function renderizar() {
+   try {
+    const hoje = new Date();
+    const offsetHoje = hoje.getTimezoneOffset();
+    const hojeLocal = new Date(hoje.getTime() - offsetHoje * 60000);
+    const chaveMesAtual = hojeLocal.toISOString().slice(0, 7); // 'YYYY-MM'
+
+    // Indicador visual do mês atual
+    const pillEl = document.getElementById('mes-atual-nome');
+    if (pillEl) pillEl.textContent = nomeDoMes(chaveMesAtual);
+
+    // Só os lançamentos do mês corrente entram no resumo/gráfico/lista principal
+    const lancamentosMes = lancamentos.filter(l => chaveDoMes(l.data) === chaveMesAtual || !l.data);
+
+    const renda  = lancamentosMes.filter(l=>l.tipo==='renda').reduce((s,l)=>s+l.valor,0);
+    const gastos = lancamentosMes.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.valor,0);
+    const saldo  = renda - gastos;
+
+    document.getElementById('total-renda').textContent  = fmt(renda);
+    document.getElementById('total-gastos').textContent = fmt(gastos);
+    const elSaldo = document.getElementById('total-saldo');
+    elSaldo.textContent = fmt(saldo);
+    elSaldo.style.color = saldo < 0 ? 'var(--alerta)' : 'var(--texto)';
+
+    document.getElementById('alerta-orcamento').classList.toggle('show', saldo < 0 && renda > 0);
+
+    // Meta regra 50/30/20
+    if (renda > 0) {
+      document.getElementById('meta-regra').innerHTML =
+        `Necessidades: <strong>${fmt(renda*0.5)}</strong><br>
+         Desejos: <strong>${fmt(renda*0.3)}</strong><br>
+         Poupança: <strong>${fmt(renda*0.2)}</strong>`;
+    }
+
+    // Gráfico por categoria (apenas do mês atual)
+    const porCat = {};
+    lancamentosMes.filter(l=>l.tipo==='gasto').forEach(l => {
+      porCat[l.categoria] = (porCat[l.categoria]||0) + l.valor;
+    });
+    const maxVal = Math.max(...Object.values(porCat), 1);
+    const chartEl = document.getElementById('chart-categorias');
+
+    if (Object.keys(porCat).length === 0) {
+      chartEl.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Nenhuma despesa registrada ainda.</div>';
+    } else {
+      chartEl.innerHTML = Object.entries(porCat)
+        .sort((a,b)=>b[1]-a[1])
+        .map(([cat,val]) => `
+          <div class="bar-row">
+            <div class="bar-label">${emojis[cat]} ${cat.charAt(0).toUpperCase()+cat.slice(1)}</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${(val/maxVal*100).toFixed(1)}%;background:${cores[cat]}"></div>
+            </div>
+            <div class="bar-val">${fmt(val)}</div>
+          </div>
+        `).join('');
+    }
+
+    // Lista agrupada por data (apenas do mês atual)
+    const listaEl = document.getElementById('lista-lancamentos');
+    if (lancamentosMes.length === 0) {
+      listaEl.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Nenhum lançamento neste mês ainda. Adicione acima!</div>';
+    } else {
+      // Agrupa lançamentos por data (chave: 'YYYY-MM-DD'; sem data vai para 'sem-data')
+      const grupos = {};
+      lancamentosMes.forEach(l => {
+        const chave = l.data || 'sem-data';
+        if (!grupos[chave]) grupos[chave] = [];
+        grupos[chave].push(l);
+      });
+
+      // Ordena as datas da mais recente para a mais antiga
+      const chavesOrdenadas = Object.keys(grupos).sort((a, b) => {
+        if (a === 'sem-data') return 1;
+        if (b === 'sem-data') return -1;
+        return b.localeCompare(a);
+      });
+
+      const hojeStr = (() => {
+        const h = new Date();
+        const offset = h.getTimezoneOffset();
+        return new Date(h.getTime() - offset * 60000).toISOString().split('T')[0];
+      })();
+
+      listaEl.innerHTML = chavesOrdenadas.map(chave => {
+        const itens = grupos[chave];
+        const rendaDia  = itens.filter(l=>l.tipo==='renda').reduce((s,l)=>s+l.valor,0);
+        const gastoDia  = itens.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.valor,0);
+        const saldoDia  = rendaDia - gastoDia;
+
+        let nomeData;
+        if (chave === 'sem-data') {
+          nomeData = 'Sem data informada';
+        } else {
+          nomeData = new Date(chave + 'T00:00:00').toLocaleDateString('pt-BR', {
+            weekday: 'long', day: '2-digit', month: 'long'
+          });
+        }
+        const ehHoje = chave === hojeStr;
+
+        const itensHtml = itens.map(l => `
+          <div class="item-lista">
+            <div class="item-dot" style="background:${l.tipo==='renda'?'#2DA05F':cores[l.categoria]}"></div>
+            <div style="flex:1">
+              <div class="item-desc">${l.descricao}</div>
+              <div class="item-cat">${emojis[l.categoria]||'💰'} ${l.categoria}</div>
+            </div>
+            <div class="item-valor ${l.tipo}">${l.tipo==='renda'?'+':'-'} ${fmt(l.valor)}</div>
+            <button class="btn-del" onclick="remover(${l.id})" title="Remover">✕</button>
+          </div>
+        `).join('');
+
+        return `
+          <div class="grupo-data">
+            <div class="grupo-header">
+              <div class="grupo-data-label">
+                <span class="nome">${nomeData}</span>
+                ${ehHoje ? '<span class="grupo-data-hoje">Hoje</span>' : ''}
+              </div>
+              <div class="grupo-data-saldo ${saldoDia > 0 ? 'positivo' : (saldoDia < 0 ? 'negativo' : '')}">
+                ${saldoDia >= 0 ? '+' : ''}${fmt(saldoDia)}
+              </div>
+            </div>
+            ${itensHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    renderizarHistorico(chaveMesAtual);
+   } catch (e) {
+    console.error('Erro em renderizar:', e);
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#D94F3A;color:#fff;padding:10px 14px;font-family:monospace;font-size:12px;z-index:9999;white-space:pre-wrap;';
+    banner.textContent = '⚠️ Erro ao atualizar tela: ' + e.message;
+    document.body.prepend(banner);
+   }
+  }
+
+  function renderizarHistorico(chaveMesAtual) {
+    const histEl = document.getElementById('historico-meses');
+    if (!histEl) return;
+
+    // Agrupa TODOS os lançamentos (exceto o mês atual) por mês
+    const porMes = {};
+    lancamentos.forEach(l => {
+      const chave = chaveDoMes(l.data);
+      if (!chave || chave === chaveMesAtual) return; // ignora sem-data e o mês corrente
+      if (!porMes[chave]) porMes[chave] = [];
+      porMes[chave].push(l);
+    });
+
+    const chaves = Object.keys(porMes).sort((a, b) => b.localeCompare(a));
+
+    if (chaves.length === 0) {
+      histEl.innerHTML = '<div class="empty"><div class="empty-icon">🗂️</div>Ainda não há meses anteriores fechados.</div>';
+      return;
+    }
+
+    histEl.innerHTML = chaves.map(chave => {
+      const itens = porMes[chave];
+      const renda  = itens.filter(l=>l.tipo==='renda').reduce((s,l)=>s+l.valor,0);
+      const gastos = itens.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.valor,0);
+      const saldo  = renda - gastos;
+      return `
+        <div class="historico-card">
+          <div class="historico-mes">${nomeDoMes(chave)}</div>
+          <div class="historico-linha"><span>Receitas</span><span>${fmt(renda)}</span></div>
+          <div class="historico-linha"><span>Despesas</span><span>${fmt(gastos)}</span></div>
+          <div class="historico-saldo-linha ${saldo >= 0 ? 'positivo' : 'negativo'}">
+            <span>Saldo</span><span>${saldo >= 0 ? '+' : ''}${fmt(saldo)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  renderizar();
+</script>
+</body>
+</html>
